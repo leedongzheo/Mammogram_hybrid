@@ -49,16 +49,22 @@ class MultiOutputLoss(object):
             
 
 class SparseMILLoss(object):
-    def __init__(self, sparse_factor, weight=None, size_average=True, ignore_index=-100, reduce=True):
+    def __init__(self, sparse_factor, weight=None, ignore_index=-100, reduction='mean'):
         self.sparse_factor = sparse_factor
-        self.CELoss = nn.CrossEntropyLoss(torch.tensor(weight), size_average, ignore_index, reduce)
-        
+        self.weight = None if weight is None else torch.as_tensor(weight, dtype=torch.float32)
+        self.ignore_index = ignore_index
+        self.reduction = reduction
+
     def __call__(self, input, target):
         input = input.view(input.size(0), input.size(1), -1) # Size: NxCxHxW -> NxCxP
         prob_input = F.softmax(input, dim=1) # Size: NxCxP
         sparse_penalty = torch.sum(prob_input[:,1:,:]) / input.size(0)
         predicted = map2label(input) # NxC
-        ce_loss = self.CELoss(predicted, target)
+        weight = self.weight
+        if weight is not None and weight.device != input.device:
+            weight = weight.to(input.device)
+        ce_loss = F.cross_entropy(predicted, target, weight=weight,
+                                  ignore_index=self.ignore_index, reduction=self.reduction)
         loss = ce_loss + self.sparse_factor * sparse_penalty
         return loss
             
