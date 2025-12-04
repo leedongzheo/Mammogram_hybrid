@@ -27,3 +27,12 @@ Mean/std calculation:
   ```
 
   Use `--scale01` only if you deliberately normalize images to [0, 1] elsewhere; otherwise leave it off to match the training pipeline.
+
+* To reproduce the paper-style numbers (≈87/≈68) that follow the training pipeline’s 512×384 BalanceCrop, provide masks and crop size so statistics are collected on training-like patches instead of entire images:
+
+  ```bash
+  python tools/compute_meanstd.py \
+    --img_dir data/img --label_dir data/label \
+    --crop_size 512 384 --samples_per_image 8 \
+    --output data/meanstd.txt
+  ```
