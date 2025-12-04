@@ -10,7 +10,7 @@ from __future__ import print_function
 import os
 import os.path as P
 import numpy as np
-import scipy.misc
+import imageio.v2 as imageio
 import torch.utils.data as udata
 
 __all__ = ['Dataset_SEGCLS_png', 'MMDataset_memmap', ]
@@ -79,7 +79,7 @@ class General_Dataset_SEGCLS(udata.Dataset):
 class Dataset_SEGCLS_png(General_Dataset_SEGCLS):
     def access_data(self, root, datapath, mod, sn, dtype, shape=None):
         fname = P.join(root, datapath, mod, '%s.png' % sn)
-        data = scipy.misc.imread(fname)
+        data = imageio.imread(fname)
         return data.astype(dtype)
 
 class MMDataset_memmap(udata.Dataset):
