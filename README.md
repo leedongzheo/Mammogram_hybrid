@@ -16,3 +16,14 @@ Label expectations:
 * For a normal (negative) image with no mass, the mask should therefore be entirely zeros.
 
 Before running the code by conducting `python train.py`, please store your images and pixel-wise labels in data/img and data/label respectively, and modify the values in data/meanstd.txt according to your data.
+
+Mean/std calculation:
+
+* The built-in `ToTensor` transform **does not** rescale pixel intensities to [0, 1]; it casts the raw values (typically 0–255) to float. Therefore, `data/meanstd.txt` should normally contain statistics computed on the original 8-bit range (e.g., mean≈87, std≈68 for many mammogram sets).
+* A helper script is provided to compute matching statistics. Example:
+
+  ```bash
+  python tools/compute_meanstd.py --img_dir data/img --output data/meanstd.txt
+  ```
+
+  Use `--scale01` only if you deliberately normalize images to [0, 1] elsewhere; otherwise leave it off to match the training pipeline.
