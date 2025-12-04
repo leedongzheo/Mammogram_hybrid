@@ -10,8 +10,7 @@ import numpy as np
 import os.path as osp
 import math
 import torch
-from torch.utils.data import DataLoader
-from torch.utils.data.sampler import WeightedRandomSampler
+from torch.utils.data import DataLoader, WeightedRandomSampler
 import torch.nn as nn
 import transforms
 import general_dataset as datasets
