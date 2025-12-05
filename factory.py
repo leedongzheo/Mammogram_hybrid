@@ -83,19 +83,20 @@ def DeconvUp2d(kernel=2, stride=2, padding=0, output_padding=0, groups=1, bias=F
 
 def BilinearUp2d(scale_factor=2):
     def upsample(inChans, outChans, nla=ReLU(True)):
+        upsample_layer = nn.Upsample(scale_factor=scale_factor, mode='bilinear', align_corners=False)
         if inChans == outChans:
-            return nn.UpsamplingBilinear2d(scale_factor=scale_factor)
+            return upsample_layer
         elif nla != None:
             return nn.Sequential(
                     nn.BatchNorm2d(inChans),
                     nla(),
                     nn.Conv2d(inChans, outChans, 1, 1, 0, bias=False),
-                    nn.UpsamplingBilinear2d(scale_factor=scale_factor)
+                    upsample_layer
                     )
         else:
             return nn.Sequential(
                     nn.Conv2d(inChans, outChans, 1, 1, 0, bias=False),
-                    nn.UpsamplingBilinear2d(scale_factor=scale_factor)
+                    upsample_layer
                     )
     return upsample
 
