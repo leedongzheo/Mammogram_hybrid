@@ -36,3 +36,8 @@ Mean/std calculation:
     --crop_size 512 384 --samples_per_image 8 \
     --output data/meanstd.txt
   ```
+
+* Why numbers differ on the same dataset (e.g., INBREAST):
+  * Whole-image statistics usually land around **mean≈45, std≈67** because large black margins and background pixels dominate the average.
+  * When you mimic training with BalanceCrop around lesions, patches contain more breast tissue and fewer blank regions, so the average intensity rises to **mean≈87, std≈68** like the paper.
+  * Pick the set that matches how you train/evaluate: use the BalanceCrop-derived numbers if you follow the paper pipeline; otherwise, keep the whole-image numbers but use them consistently for train/val/test.

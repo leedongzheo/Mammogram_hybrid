@@ -193,6 +193,8 @@ def main():
     args = parser.parse_args()
 
     random.seed(args.seed)
+    mode = "BalanceCrop patches" if args.label_dir else "whole images"
+
     mean, std = compute_stats(
         args.img_dir,
         args.scale01,
@@ -203,7 +205,7 @@ def main():
     )
     write_stats(mean, std, args.output)
 
-    print(f"Processed {args.img_dir}")
+    print(f"Processed {args.img_dir} using {mode}")
     print("mean:", " ".join(f"{m:.4f}" for m in mean))
     print("std:", " ".join(f"{s:.4f}" for s in std))
     print(f"Saved to {args.output}")
